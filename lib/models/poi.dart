@@ -6,8 +6,8 @@ class Poi {
   final String shortDescription;
   final String description;
   final PoiCategory category;
-  final double mapX;
-  final double mapY;
+  final double lat;
+  final double lng;
   final String imageAsset;
   final String? visitorNote;
   final List<String> questIds;
@@ -19,8 +19,8 @@ class Poi {
     required this.shortDescription,
     required this.description,
     required this.category,
-    required this.mapX,
-    required this.mapY,
+    required this.lat,
+    required this.lng,
     required this.imageAsset,
     this.visitorNote,
     required this.questIds,

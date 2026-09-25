@@ -71,16 +71,16 @@ void main() {
     });
   });
 
-  group('POI map coordinates', () {
-    test('all mapX and mapY values are within [0.0, 1.0]', () {
+  group('POI coordinates', () {
+    test('all lat values are within [41.11, 41.27] and lng within [-71.65, -71.51]', () {
       final outOfBounds = <String, String>{};
       for (final poi in kPois) {
         final issues = <String>[];
-        if (poi.mapX < 0.0 || poi.mapX > 1.0) {
-          issues.add('mapX=${poi.mapX}');
+        if (poi.lat < 41.11 || poi.lat > 41.27) {
+          issues.add('lat=${poi.lat}');
         }
-        if (poi.mapY < 0.0 || poi.mapY > 1.0) {
-          issues.add('mapY=${poi.mapY}');
+        if (poi.lng < -71.65 || poi.lng > -71.51) {
+          issues.add('lng=${poi.lng}');
         }
         if (issues.isNotEmpty) {
           outOfBounds[poi.id] = issues.join(', ');

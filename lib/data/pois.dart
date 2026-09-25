@@ -4,7 +4,7 @@ import '../models/poi.dart';
 // Sourced from Wikipedia, blockislandinfo.com, newshorehamri.gov, blockislandferry.com
 // See accompanying notes for unresolved source conflicts (heights, distances, battle dating).
 
-const mohegheanBluffs = Poi(
+const moheganBluffs = Poi(
   id: 'mohegan-bluffs',
   name: 'Mohegan Bluffs',
   shortDescription: 'Clay cliffs over 150 feet high, with stairs to the beach',
@@ -29,8 +29,8 @@ const mohegheanBluffs = Poi(
       'source before this goes further than "named for a Native American '
       'battle."',
   category: PoiCategory.shore,
-  mapX: 0.0,
-  mapY: 0.0,
+  lat: 41.153253,
+  lng: -71.555159,
   imageAsset: 'assets/images/mohegan-bluffs.jpg',
   visitorNote:
       'The stairs to the beach are steep — 141 steps down, plus a rock '
@@ -68,8 +68,8 @@ const southeastLight = Poi(
       'Lighthouse Foundation since 1992, which operates a small museum '
       'and gift shop in the tower base.',
   category: PoiCategory.historic,
-  mapX: 0.0,
-  mapY: 0.0,
+  lat: 41.153573,
+  lng: -71.552072,
   imageAsset: 'assets/images/southeast-light.jpg',
   visitorNote:
       'Tower interior is only open via guided tour during the summer '
@@ -105,8 +105,8 @@ const northLight = Poi(
       'reach it. Beyond the lighthouse lies Sachem Pond, a wildlife '
       'refuge for gulls, terns, and other shorebirds.',
   category: PoiCategory.historic,
-  mapX: 0.0,
-  mapY: 0.0,
+  lat: 41.227844,
+  lng: -71.575921,
   imageAsset: 'assets/images/north-light.jpg',
   visitorNote:
       'No tower access — only the first-floor museum is open to the '
@@ -120,7 +120,7 @@ const northLight = Poi(
 );
 
 const poiBatch1 = <Poi>[
-  mohegheanBluffs,
+  moheganBluffs,
   southeastLight,
   northLight,
 ];

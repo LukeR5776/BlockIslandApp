@@ -64,8 +64,9 @@ class StyleguideScreen extends StatelessWidget {
               _colorSwatch('catShore', AppColors.catShore, '0xFF2E7191'),
               _colorSwatch('catTrail', AppColors.catTrail, '0xFF4A6B4F'),
               _colorSwatch('catHistoric', AppColors.catHistoric, '0xFF7A5C3E'),
-              _colorSwatch('catWildlife', AppColors.catWildlife, '0xFF6B7F3F'),
-              _colorSwatch('catTown', AppColors.catTown, '0xFF8C4B3A'),
+              _colorSwatch('catLandmark', AppColors.catLandmark, '0xFF6B7F3F'),
+              _colorSwatch(
+                  'catOrganization', AppColors.catOrganization, '0xFF8C4B3A'),
               const SizedBox(height: AppSpace.lg),
 
               // Typography

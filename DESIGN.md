@@ -63,12 +63,12 @@ class AppColors {
   static const hazard    = Color(0xFFA8431F); // visitor cautions
 
   // POI categories — used at 0.12 opacity for chip fills,
-  // full opacity for chip text and marker rings.
-  static const catShore    = Color(0xFF2E7191);
-  static const catTrail    = Color(0xFF4A6B4F);
-  static const catHistoric = Color(0xFF7A5C3E);
-  static const catWildlife = Color(0xFF6B7F3F);
-  static const catTown     = Color(0xFF8C4B3A);
+  // full opacity for chip text. Markers are always beacon, never category.
+  static const catShore        = Color(0xFF2E7191);
+  static const catTrail        = Color(0xFF4A6B4F);
+  static const catHistoric     = Color(0xFF7A5C3E);
+  static const catLandmark     = Color(0xFF6B7F3F);
+  static const catOrganization = Color(0xFF8C4B3A);
 }
 ```
 

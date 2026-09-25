@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_vector_tiles/flutter_map_vector_tiles.dart' as vt;
-import 'package:latlong2/latlong.dart';
 
+import '../../models/poi.dart';
 import '../../theme/colors.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography.dart';
-import 'pmtiles_asset_client.dart';
+import '../../widgets/category_chip.dart';
+import '../../widgets/island_map.dart';
+import '../../widgets/primary_button.dart';
 
-/// SPIKE: proves the bundled PMTiles archive renders with no network.
-/// No markers, no sheet, no filters — those stay on the `island.webp` path
-/// in PLAN.md until this approach is adopted or dropped.
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -19,90 +16,88 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  static const _center = LatLng(41.172, -71.578);
+  Poi? _selected;
 
-  /// The archive's own bounds, read from its PMTiles header.
-  static final _islandBounds = LatLngBounds(
-    const LatLng(41.11, -71.65),
-    const LatLng(41.27, -71.51),
-  );
+  void _selectPoi(Poi poi) => setState(() => _selected = poi);
 
-  final _controller = MapController();
-  final _client = PmTilesAssetClient('assets/map/blockisland.pmtiles');
-
-  late final Future<vt.Style> _style = _readStyle();
-
-  /// `resolveProvider` is consulted before the style's source URL is looked
-  /// at, so the style's remote `pmtiles://latest.protomaps.com` archive is
-  /// never contacted — the document still supplies theme and attribution.
-  Future<vt.Style> _readStyle() => vt.StyleReader(
-        uri: 'asset://assets/map/style.json',
-        cache: false,
-        logger: const vt.Logger.console(),
-        resolveProvider: (sourceId) async => sourceId == 'protomaps'
-            ? await vt.PmTilesVectorTileProvider.open(
-                PmTilesAssetClient.archiveUrl,
-                client: _client,
-                logger: const vt.Logger.console(),
-              )
-            : null,
-      ).read();
-
-  @override
-  void dispose() {
-    _style.then((style) => style.dispose()).ignore();
-    _controller.dispose();
-    _client.close();
-    super.dispose();
+  void _clearSelection() {
+    if (_selected == null) return;
+    setState(() => _selected = null);
   }
 
   @override
   Widget build(BuildContext context) {
+    final selected = _selected;
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: SafeArea(
-        child: FutureBuilder<vt.Style>(
-          future: _style,
-          builder: (context, snapshot) {
-            final style = snapshot.data;
-            if (style == null) return _pending(snapshot.error);
-            return _map(style);
-          },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IslandMap(
+                onPoiTap: _selectPoi,
+                onMapTap: _clearSelection,
+                selectedPoiId: selected?.id,
+              ),
+            ),
+            if (selected != null)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _PoiSheet(poi: selected),
+              ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _pending(Object? error) => Center(
-        child: error == null
-            ? const CircularProgressIndicator(color: AppColors.depth)
-            : Padding(
-                padding: const EdgeInsets.all(AppSpace.lg),
-                child: Text('Style failed to load.\n$error',
-                    style: AppText.caption, textAlign: TextAlign.center),
-              ),
-      );
+/// Inline rather than a modal route: a modal barrier would swallow the map
+/// taps that clear the selection.
+class _PoiSheet extends StatelessWidget {
+  final Poi poi;
 
-  Widget _map(vt.Style style) => FlutterMap(
-        mapController: _controller,
-        options: MapOptions(
-          initialCenter: _center,
-          initialZoom: 13,
-          minZoom: 11,
-          maxZoom: 16,
-          cameraConstraint: CameraConstraint.contain(bounds: _islandBounds),
-          interactionOptions: const InteractionOptions(
-            flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-          ),
+  const _PoiSheet({required this.poi});
+
+  static const _decoration = BoxDecoration(
+    color: AppColors.surface,
+    borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.sheetShadow,
+        blurRadius: 24,
+        offset: Offset(0, -4),
+      ),
+    ],
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: _decoration,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpace.md),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(poi.name, style: AppText.title),
+            const SizedBox(height: AppSpace.sm),
+            CategoryChip(category: poi.category),
+            const SizedBox(height: AppSpace.sm),
+            Text(poi.shortDescription, style: AppText.body),
+            const SizedBox(height: AppSpace.md),
+            PrimaryButton(
+              label: 'Read more',
+              onPressed: () {
+                // TODO(2.3): push PoiScreen
+              },
+            ),
+          ],
         ),
-        children: [
-          vt.VectorTileLayer(
-            theme: style.theme,
-            tileProviders: style.providers,
-            rasterSources: style.rasterSources,
-            sprites: style.sprites,
-            logger: const vt.Logger.console(),
-          ),
-        ],
-      );
+      ),
+    );
+  }
 }
