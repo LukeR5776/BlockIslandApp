@@ -297,6 +297,9 @@ behind it, rather than the night before submission.
 | 3.4 | 60m | Quest completion with haptics and animation, reflected on POI screens |
 | 3.5 | 45m | `ProgressRing` on each tab header, "7 of 14 places explored" |
 
+3.1: build Education lists, then extract ContentCard and replace the
+private module row in poi_screen.dart.
+
 ---
 
 ## Week 4 — Polish and submit (5h)

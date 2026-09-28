@@ -7,6 +7,7 @@ import '../../theme/typography.dart';
 import '../../widgets/category_chip.dart';
 import '../../widgets/island_map.dart';
 import '../../widgets/primary_button.dart';
+import 'poi_screen.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -73,6 +74,12 @@ class _PoiSheet extends StatelessWidget {
     ],
   );
 
+  void _openPoi(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => PoiScreen(poi: poi)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -91,9 +98,7 @@ class _PoiSheet extends StatelessWidget {
             const SizedBox(height: AppSpace.md),
             PrimaryButton(
               label: 'Read more',
-              onPressed: () {
-                // TODO(2.3): push PoiScreen
-              },
+              onPressed: () => _openPoi(context),
             ),
           ],
         ),
