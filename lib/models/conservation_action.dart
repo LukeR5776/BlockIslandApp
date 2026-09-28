@@ -1,12 +1,13 @@
 enum ActionKind { habit, event, volunteer, support }
 
+/// A Conservation tab item: a habit, event, or org to get involved with.
 class ConservationAction {
   final String id;
   final String title;
   final String description;
   final ActionKind kind;
   final List<String> steps;
-  final String? url;
+  final String? url; // external org link, opened via url_launcher
 
   const ConservationAction({
     required this.id,

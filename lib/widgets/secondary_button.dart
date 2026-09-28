@@ -3,6 +3,7 @@ import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../theme/typography.dart';
 
+/// Outlined counterpart to PrimaryButton — same metrics, hairline border.
 class SecondaryButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

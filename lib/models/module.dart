@@ -1,5 +1,6 @@
 enum ModuleCategory { ecology, history, geology, community }
 
+/// One reading section within a Module.
 class ModuleSection {
   final String heading;
   final String body;
@@ -12,6 +13,7 @@ class ModuleSection {
   });
 }
 
+/// An Education tab reading module.
 class Module {
   final String id;
   final ModuleCategory category;
@@ -19,8 +21,8 @@ class Module {
   final String summary;
   final List<ModuleSection> sections;
   final int readMinutes;
-  final List<String> relatedPoiIds;
-  final List<String> sources;
+  final List<String> relatedPoiIds; // join key -> Poi.id
+  final List<String> sources; // shown in About screen
 
   const Module({
     required this.id,

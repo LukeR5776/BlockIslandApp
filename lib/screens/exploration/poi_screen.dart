@@ -13,6 +13,8 @@ import '../../widgets/quest_tile.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/visitor_note.dart';
 
+/// Full detail screen for a single POI: image, name, chip, note,
+/// description, quests, related modules — pushed from the map sheet.
 class PoiScreen extends StatelessWidget {
   final Poi poi;
 
@@ -50,6 +52,8 @@ class PoiScreen extends StatelessWidget {
     );
   }
 
+  // Quest/module sections are omitted entirely (not shown empty) when
+  // their list is empty.
   List<Widget> _content() {
     final note = poi.visitorNote;
     return [
@@ -68,6 +72,7 @@ class PoiScreen extends StatelessWidget {
     ];
   }
 
+  // Split on double newline so paragraphs get proper spacing, not one block.
   List<Widget> _description() => _spaced(
         [
           for (final paragraph in poi.description.split('\n\n'))
@@ -93,6 +98,7 @@ class PoiScreen extends StatelessWidget {
         for (final module in _modules) _ModuleRow(module: module),
       ];
 
+  // Interposes a fixed gap between items without one trailing the last.
   static List<Widget> _spaced(List<Widget> items, double gap) => [
         for (var i = 0; i < items.length; i++) ...[
           if (i > 0) SizedBox(height: gap),

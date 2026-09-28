@@ -5,6 +5,8 @@ import '../../theme/spacing.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/secondary_button.dart';
 
+/// Dev-only reference screen: every color, text style, spacing value, and
+/// button rendered together. Delete before submission (see PLAN.md 4.1).
 class StyleguideScreen extends StatelessWidget {
   const StyleguideScreen({super.key});
 

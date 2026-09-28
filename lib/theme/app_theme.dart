@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'typography.dart';
 
+/// Assembles the single, light-only ThemeData from the token files.
 ThemeData buildAppTheme() {
   return ThemeData(
     scaffoldBackgroundColor: AppColors.paper,
@@ -23,6 +24,7 @@ ThemeData buildAppTheme() {
       labelMedium: AppText.label,
       labelSmall: AppText.label,
     ),
+    // iOS-native push transition on both platforms — no router package.
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

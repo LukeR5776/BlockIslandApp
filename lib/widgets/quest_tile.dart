@@ -13,6 +13,7 @@ class QuestTile extends StatelessWidget {
 
   static const _circleSize = 22.0;
 
+  // Completed state (filled beacon + check) lands in 3.4, not built yet.
   static const _incompleteCircle = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.fromBorderSide(BorderSide(color: AppColors.hairline)),

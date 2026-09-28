@@ -5,6 +5,7 @@ import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../theme/typography.dart';
 
+/// Category pill: category color at 12% fill, full-opacity text, no icon.
 class CategoryChip extends StatelessWidget {
   final PoiCategory category;
 

@@ -15,9 +15,9 @@ class MapMarker extends StatelessWidget {
     this.completed = false,
   });
 
-  static const _core = 14.0;
-  static const _ring = _core + 3 * 2;
-  static const _rim = _ring + 1 * 2;
+  static const _core = 14.0; // filled beacon circle
+  static const _ring = _core + 3 * 2; // + white ring
+  static const _rim = _ring + 1 * 2; // + beacon outer ring
 
   static const _beacon = BoxDecoration(
     shape: BoxShape.circle,
@@ -29,6 +29,7 @@ class MapMarker extends StatelessWidget {
     color: AppColors.surface,
   );
 
+  // Solid white dot at center when the POI's quest is complete.
   Widget? get _completionDot => completed
       ? const Center(
           child: SizedBox(

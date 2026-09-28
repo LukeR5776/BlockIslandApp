@@ -17,7 +17,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  Poi? _selected;
+  Poi? _selected; // stays set while PoiScreen is pushed on top, so back preserves it
 
   void _selectPoi(Poi poi) => setState(() => _selected = poi);
 
@@ -57,6 +57,7 @@ class _MapScreenState extends State<MapScreen> {
 
 /// Inline rather than a modal route: a modal barrier would swallow the map
 /// taps that clear the selection.
+/// Bottom sheet preview shown when a pin is selected.
 class _PoiSheet extends StatelessWidget {
   final Poi poi;
 
@@ -74,6 +75,7 @@ class _PoiSheet extends StatelessWidget {
     ],
   );
 
+  // Map screen stays alive underneath, so _selected survives the round trip.
   void _openPoi(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => PoiScreen(poi: poi)),

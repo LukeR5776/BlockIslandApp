@@ -4,6 +4,7 @@ import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../theme/typography.dart';
 
+/// Practical caution callout (land fill, hazard left strip). Not an alarm.
 class VisitorNote extends StatelessWidget {
   final String text;
 

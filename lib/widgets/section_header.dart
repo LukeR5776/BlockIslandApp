@@ -4,6 +4,7 @@ import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../theme/typography.dart';
 
+/// Heading + optional trailing count, hairline rule below. No uppercase eyebrow.
 class SectionHeader extends StatelessWidget {
   final String title;
   final int? count;

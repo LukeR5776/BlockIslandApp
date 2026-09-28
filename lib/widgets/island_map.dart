@@ -15,6 +15,8 @@ import '../theme/typography.dart';
 import 'category_chip.dart';
 import 'map_marker.dart';
 
+/// The offline PMTiles basemap plus a MarkerLayer of POI pins. Map logic
+/// only — the pin visual lives in map_marker.dart.
 class IslandMap extends StatefulWidget {
   final ValueChanged<Poi> onPoiTap;
   final VoidCallback onMapTap;
@@ -77,6 +79,7 @@ class _IslandMapState extends State<IslandMap> {
     widget.onPoiTap(poi);
   }
 
+  // One 44x44 hit-target Marker per POI; the 14pt visual stays centered.
   Marker _marker(Poi poi, AppState state) => Marker(
         point: LatLng(poi.lat, poi.lng),
         width: _hitTarget,
@@ -110,6 +113,7 @@ class _IslandMapState extends State<IslandMap> {
     );
   }
 
+  // Shown while the style asset loads, or if it fails to parse.
   Widget _pending(Object? error) => Center(
         child: error == null
             ? const CircularProgressIndicator(color: AppColors.depth)
@@ -131,9 +135,10 @@ class _IslandMapState extends State<IslandMap> {
           interactionOptions: const InteractionOptions(
             flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
           ),
-          onTap: (_, _) => widget.onMapTap(),
+          onTap: (_, _) => widget.onMapTap(), // tapping empty map clears selection
         ),
         children: [
+          // Offline vector basemap, rendered from the bundled PMTiles archive.
           vt.VectorTileLayer(
             theme: style.theme,
             tileProviders: style.providers,

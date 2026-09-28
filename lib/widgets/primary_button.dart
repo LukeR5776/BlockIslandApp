@@ -3,6 +3,8 @@ import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../theme/typography.dart';
 
+/// depth-filled, 48pt full-width button. See SecondaryButton for the
+/// outlined variant.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

@@ -1,5 +1,6 @@
 enum PoiCategory { shore, trail, historic, landmark, organization }
 
+/// A point of interest on the Exploration map.
 class Poi {
   final String id;
   final String name;
@@ -9,9 +10,9 @@ class Poi {
   final double lat;
   final double lng;
   final String imageAsset;
-  final String? visitorNote;
-  final List<String> questIds;
-  final List<String> moduleIds;
+  final String? visitorNote; // practical caution, e.g. steep stairs
+  final List<String> questIds; // join key -> Quest.poiId
+  final List<String> moduleIds; // join key -> Module.relatedPoiIds
 
   const Poi({
     required this.id,

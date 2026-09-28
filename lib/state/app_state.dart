@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/poi.dart';
 
+/// The app's entire mutable state. Persisted as three StringLists in
+/// shared_preferences; writes are fire-and-forget after notifyListeners so
+/// the UI never waits on disk.
 class AppState extends ChangeNotifier {
   Set<String> _completedQuestIds = {};
   Set<String> _readModuleIds = {};
@@ -43,12 +46,14 @@ class AppState extends ChangeNotifier {
 
   int get questsCompleted => _completedQuestIds.length;
 
+  // A POI counts as visited when any one of its quests is complete.
   int poisVisited(List<Poi> allPois) {
     return allPois.where((poi) {
       return poi.questIds.any((questId) => _completedQuestIds.contains(questId));
     }).length;
   }
 
+  /// Call once in main() before runApp — restores persisted sets from disk.
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     _completedQuestIds = (prefs.getStringList('completedQuestIds') ?? []).toSet();
@@ -57,6 +62,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Fired after every mutation; UI already updated via notifyListeners.
   Future<void> _persist() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('completedQuestIds', _completedQuestIds.toList());

@@ -5,6 +5,9 @@ import 'pois.dart';
 import 'quests.dart';
 import 'modules.dart';
 
+// ID lookup helpers, built once from the const data lists. Everything here
+// is a derived index — the data files above are the source of truth.
+
 final Map<String, Poi> poiById = {
   for (final poi in kPois) poi.id: poi,
 };

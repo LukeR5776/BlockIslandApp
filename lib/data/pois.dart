@@ -125,4 +125,5 @@ const poiBatch1 = <Poi>[
   northLight,
 ];
 
+// Full POI list consumed by the app; content_index.dart indexes this.
 const List<Poi> kPois = poiBatch1;

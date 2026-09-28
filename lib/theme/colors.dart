@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Raw palette per DESIGN.md. No semantic aliases here — screens reference
+/// these tokens directly, never a hardcoded Color.
 class AppColors {
   // Ground
   static const paper = Color(0xFFFDFDFB); // app background
@@ -32,6 +34,6 @@ class AppColors {
   static const catLandmark = Color(0xFF6B7F3F);
   static const catOrganization = Color(0xFF8C4B3A);
 
-  // Elevation
+  // Elevation — the only shadow in the app, on the bottom sheet
   static const sheetShadow = Color(0x1416212B); // ink at 8% opacity
 }

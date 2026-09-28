@@ -1,3 +1,4 @@
+/// The six-value spacing scale per DESIGN.md. Screen padding is always md.
 class AppSpace {
   static const xs = 4.0;
   static const sm = 8.0;
