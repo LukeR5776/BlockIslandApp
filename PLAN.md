@@ -1,7 +1,7 @@
 # PLAN.md — Architecture and schedule
 
 Five weeks, five hours a week, 25 hours total. `CLAUDE.md` holds the operating
-rules; `DESIGN.md` holds the visual spec.
+rules; `DESIGN.md` holds the visual direction.
 
 ---
 
@@ -14,7 +14,8 @@ days. Nothing else on this plan blocks; this one does.
 
 ## File tree
 
-Creating a file outside this tree requires asking first.
+The core structure. Add files freely as the design grows — new widgets,
+animation helpers, extra theme files, and so on.
 
 ```
 lib/
@@ -81,7 +82,7 @@ This is the backbone. Every screen is a rendering of this data. Getting it
 right in Week 1 makes the rest of the app mechanical.
 
 ```dart
-enum PoiCategory { shore, trail, historic, wildlife, town }
+enum PoiCategory { shore, trail, historic, landmark, organization }
 enum ModuleCategory { ecology, history, geology, community }
 enum QuestType { observe, count, reflect, act }
 enum ActionKind { habit, event, volunteer, support }
@@ -192,13 +193,13 @@ bbox (`-71.65, 41.11, -71.51, 41.27`). Tune the numbers by hot reload.
 
 **POI pins:** a `MarkerLayer` above the `VectorTileLayer`, one `Marker` per
 POI at `LatLng(poi.lat, poi.lng)`. Each marker is a 44×44 box (the hit area)
-containing the 14pt `MapMarker` visual from DESIGN.md. flutter_map draws
+containing the `MapMarker` visual. flutter_map draws
 markers in screen space, so they stay the same size at every zoom with no
 extra code. The marker is a circle, so keep the default centered alignment;
 only a teardrop pin would need `Alignment.topCenter`.
 
 Do **not** add POIs as GeoJSON sources or style layers. Tap handling on style
-layers is harder and pins would no longer use the design system.
+layers is harder and pins could no longer be animated Flutter widgets.
 
 **Coordinates:** look up each POI's lat/lng once (Google Maps → right-click →
 copy coordinates) and store them in `pois.dart`. No projection math anywhere.
@@ -239,8 +240,8 @@ every factual claim. Paste the finished Dart into `lib/data/`.
 **Prompt for 1.2:**
 
 > Read CLAUDE.md and DESIGN.md. Build the theme layer: colors.dart,
-> typography.dart, spacing.dart, and app_theme.dart, using exactly the tokens
-> in DESIGN.md — do not invent or adjust any value. Then create
+> typography.dart, spacing.dart, and app_theme.dart, following the direction
+> in DESIGN.md. Then create
 > lib/screens/dev/styleguide_screen.dart displaying every color swatch with its
 > token name, every text style with its name rendered in a sample sentence, the
 > spacing scale, and both button variants. Wire it as the temporary home. Plan
@@ -277,13 +278,13 @@ behind it, rather than the night before submission.
 
 > Read the map section of PLAN.md. Move the working FlutterMap out of
 > map_screen.dart into lib/widgets/island_map.dart without changing its
-> behavior. Build lib/widgets/map_marker.dart to the MapMarker spec in
+> behavior. Build lib/widgets/map_marker.dart as an animated marker following
 > DESIGN.md. Add a flutter_map MarkerLayer above the VectorTileLayer with one
 > 44×44 Marker per POI in kPois at LatLng(poi.lat, poi.lng). Tapping a marker
 > calls onPoiTap(Poi), which map_screen.dart uses to show a bottom sheet with
 > name, category chip, shortDescription, and a button that pushes PoiScreen.
 > Tapping empty map clears the selection. Use flutter_map's current API from
-> pub.dev, not memory. Do not add packages or touch style.json. Plan first.
+> pub.dev, not memory.
 
 ---
 
@@ -379,8 +380,8 @@ visual review to the end of a session.
 
 ## Working with the agent
 
-- Plan mode first, always. Approve the plan, then let it execute.
-- One feature per session, then `/clear`.
+- Plan first for large changes (new screens, redesigns, new packages). Small
+  and medium UI work can go straight to code.
 - Name files explicitly: "read `lib/theme/typography.dart` and
   `lib/widgets/content_card.dart`, then build `module_screen.dart` using
   those" beats letting it search.
@@ -390,9 +391,9 @@ visual review to the end of a session.
 - For anything touching `flutter_map` or `flutter_map_vector_tiles`, the agent
   works from current pub.dev docs. If it can't fetch them, paste them in.
   Code written from memory for these packages will look right and not compile.
-- **Never let it resolve a build failure by adding a package.** This is the
-  exact failure mode that sinks projects. The answer is always no; ask for an
-  approach without the dependency.
+- **Never let it resolve a build failure by adding a package.** Fix the code.
+  Packages added for design reasons are fine; anything with native iOS/Android
+  code needs your approval first.
 
 ---
 
@@ -408,8 +409,8 @@ Decide these now, so you are not negotiating with yourself at 11pm in Week 4.
 3. **Module read-progress on scroll.** Degrade to a manual "Mark as read"
    button.
 4. **iPad support.** Declare iPhone-only. Halves the layout testing.
-5. **Dark mode.** Locked to light in `DESIGN.md`. A well-executed light theme
-   beats a rushed dual theme, and reviewers do not care.
+5. **Dark mode.** Optional. Build it if the design calls for it; cut it if
+   time runs short.
 
 ---
 
