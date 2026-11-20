@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'colors.dart';
 import 'typography.dart';
 
@@ -23,6 +24,14 @@ ThemeData buildAppTheme() {
       labelLarge: AppText.label,
       labelMedium: AppText.label,
       labelSmall: AppText.label,
+    ),
+    // Detail screens pushed over the shell share one flat, paper-colored bar.
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.paper,
+      foregroundColor: AppColors.ink,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
     // iOS-native push transition on both platforms — no router package.
     pageTransitionsTheme: const PageTransitionsTheme(

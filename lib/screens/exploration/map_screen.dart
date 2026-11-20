@@ -7,7 +7,11 @@ import '../../theme/typography.dart';
 import '../../widgets/category_chip.dart';
 import '../../widgets/island_map.dart';
 import '../../widgets/primary_button.dart';
+import '../../widgets/view_toggle.dart';
+import 'poi_list_view.dart';
 import 'poi_screen.dart';
+
+enum _ExploreView { map, list }
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -17,7 +21,21 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  Poi? _selected; // stays set while PoiScreen is pushed on top, so back preserves it
+  Poi?
+  _selected; // stays set while PoiScreen is pushed on top, so back preserves it
+
+  // Session-only view choices; deliberately not persisted.
+  _ExploreView _view = _ExploreView.map;
+  PoiSort _sort = PoiSort.alphabetical;
+
+  static const _viewOptions = [
+    ViewToggleOption(_ExploreView.map, 'Map'),
+    ViewToggleOption(_ExploreView.list, 'List'),
+  ];
+
+  void _setView(_ExploreView view) => setState(() => _view = view);
+
+  void _setSort(PoiSort sort) => setState(() => _sort = sort);
 
   void _selectPoi(Poi poi) => setState(() => _selected = poi);
 
@@ -28,29 +46,52 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selected = _selected;
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            Positioned.fill(
-              child: IslandMap(
-                onPoiTap: _selectPoi,
-                onMapTap: _clearSelection,
-                selectedPoiId: selected?.id,
+            ViewToggle<_ExploreView>(
+              options: _viewOptions,
+              selected: _view,
+              onChanged: _setView,
+            ),
+            // IndexedStack keeps the map alive, so pan and zoom survive a
+            // trip to the list and back.
+            Expanded(
+              child: IndexedStack(
+                index: _view.index,
+                children: [
+                  _mapView(),
+                  PoiListView(sort: _sort, onSortChanged: _setSort),
+                ],
               ),
             ),
-            if (selected != null)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: _PoiSheet(poi: selected),
-              ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _mapView() {
+    final selected = _selected;
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: IslandMap(
+            onPoiTap: _selectPoi,
+            onMapTap: _clearSelection,
+            selectedPoiId: selected?.id,
+          ),
+        ),
+        if (selected != null)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _PoiSheet(poi: selected),
+          ),
+      ],
     );
   }
 }
@@ -77,9 +118,9 @@ class _PoiSheet extends StatelessWidget {
 
   // Map screen stays alive underneath, so _selected survives the round trip.
   void _openPoi(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => PoiScreen(poi: poi)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => PoiScreen(poi: poi)));
   }
 
   @override

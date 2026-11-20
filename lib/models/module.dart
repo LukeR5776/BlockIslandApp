@@ -1,5 +1,14 @@
 enum ModuleCategory { ecology, history, geology, community }
 
+extension ModuleCategoryLabel on ModuleCategory {
+  String get label => switch (this) {
+        ModuleCategory.ecology => 'Ecology',
+        ModuleCategory.history => 'History',
+        ModuleCategory.geology => 'Geology',
+        ModuleCategory.community => 'Community',
+      };
+}
+
 /// One reading section within a Module.
 class ModuleSection {
   final String heading;

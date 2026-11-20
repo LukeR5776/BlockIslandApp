@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:block_island/models/poi.dart';
 import 'package:block_island/data/pois.dart';
+import 'package:block_island/data/actions.dart';
+import 'package:block_island/data/modules.dart';
+import 'package:block_island/data/content_index.dart';
 
 void main() {
   group('POI ID uniqueness', () {
@@ -10,7 +13,8 @@ void main() {
       expect(
         ids.length,
         uniqueIds.length,
-        reason: 'Duplicate POI IDs found: ${ids.where((id) => ids.where((x) => x == id).length > 1).toSet()}',
+        reason:
+            'Duplicate POI IDs found: ${ids.where((id) => ids.where((x) => x == id).length > 1).toSet()}',
       );
     });
   });
@@ -28,7 +32,8 @@ void main() {
       expect(
         invalidIds,
         isEmpty,
-        reason: 'POI IDs must be lowercase kebab-case (no spaces, underscores, or uppercase): $invalidIds',
+        reason:
+            'POI IDs must be lowercase kebab-case (no spaces, underscores, or uppercase): $invalidIds',
       );
     });
   });
@@ -44,7 +49,8 @@ void main() {
       expect(
         tooLong,
         isEmpty,
-        reason: 'Short descriptions exceed 60 chars: ${tooLong.entries.map((e) => '${e.key} (${e.value} chars)').join(', ')}',
+        reason:
+            'Short descriptions exceed 60 chars: ${tooLong.entries.map((e) => '${e.key} (${e.value} chars)').join(', ')}',
       );
     });
   });
@@ -66,32 +72,37 @@ void main() {
       expect(
         emptyFields,
         isEmpty,
-        reason: 'POIs with empty fields: ${emptyFields.entries.map((e) => '${e.key}: ${e.value.join(', ')}').join('; ')}',
+        reason:
+            'POIs with empty fields: ${emptyFields.entries.map((e) => '${e.key}: ${e.value.join(', ')}').join('; ')}',
       );
     });
   });
 
   group('POI coordinates', () {
-    test('all lat values are within [41.11, 41.27] and lng within [-71.65, -71.51]', () {
-      final outOfBounds = <String, String>{};
-      for (final poi in kPois) {
-        final issues = <String>[];
-        if (poi.lat < 41.11 || poi.lat > 41.27) {
-          issues.add('lat=${poi.lat}');
+    test(
+      'all lat values are within [41.11, 41.27] and lng within [-71.65, -71.51]',
+      () {
+        final outOfBounds = <String, String>{};
+        for (final poi in kPois) {
+          final issues = <String>[];
+          if (poi.lat < 41.11 || poi.lat > 41.27) {
+            issues.add('lat=${poi.lat}');
+          }
+          if (poi.lng < -71.65 || poi.lng > -71.51) {
+            issues.add('lng=${poi.lng}');
+          }
+          if (issues.isNotEmpty) {
+            outOfBounds[poi.id] = issues.join(', ');
+          }
         }
-        if (poi.lng < -71.65 || poi.lng > -71.51) {
-          issues.add('lng=${poi.lng}');
-        }
-        if (issues.isNotEmpty) {
-          outOfBounds[poi.id] = issues.join(', ');
-        }
-      }
-      expect(
-        outOfBounds,
-        isEmpty,
-        reason: 'POIs with out-of-bounds coordinates: ${outOfBounds.entries.map((e) => '${e.key} (${e.value})').join('; ')}',
-      );
-    });
+        expect(
+          outOfBounds,
+          isEmpty,
+          reason:
+              'POIs with out-of-bounds coordinates: ${outOfBounds.entries.map((e) => '${e.key} (${e.value})').join('; ')}',
+        );
+      },
+    );
   });
 
   group('POI image assets', () {
@@ -106,7 +117,8 @@ void main() {
       expect(
         invalidPaths,
         isEmpty,
-        reason: 'Invalid imageAsset paths: ${invalidPaths.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
+        reason:
+            'Invalid imageAsset paths: ${invalidPaths.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
       );
     });
   });
@@ -122,7 +134,8 @@ void main() {
       expect(
         invalidCategories,
         isEmpty,
-        reason: 'POIs with invalid categories: ${invalidCategories.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
+        reason:
+            'POIs with invalid categories: ${invalidCategories.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
       );
     });
   });
@@ -145,8 +158,65 @@ void main() {
       expect(
         nonEmpty,
         isEmpty,
-        reason: 'POIs with non-empty relation lists (should be empty until Week 3): ${nonEmpty.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
+        reason:
+            'POIs with non-empty relation lists (should be empty until Week 3): ${nonEmpty.entries.map((e) => '${e.key}: ${e.value}').join('; ')}',
       );
+    });
+  });
+
+  group('Conservation organizations', () {
+    test('every curated organization ID resolves to a POI', () {
+      final missing = conservationOrganizationIds
+          .where((id) => !poiById.containsKey(id))
+          .toList();
+      expect(missing, isEmpty, reason: 'Unknown POI IDs: $missing');
+    });
+  });
+
+  group('Conservation actions', () {
+    test('all action IDs are unique', () {
+      final ids = allActions.map((a) => a.id).toList();
+      expect(ids.length, ids.toSet().length, reason: 'Duplicate action IDs');
+    });
+
+    test('every action url parses as an absolute URL', () {
+      final invalid = <String, String>{};
+      for (final action in allActions) {
+        final url = action.url;
+        if (url == null) continue;
+        final uri = Uri.tryParse(url);
+        if (uri == null || !uri.isAbsolute) invalid[action.id] = url;
+      }
+      expect(invalid, isEmpty, reason: 'Invalid action URLs: $invalid');
+    });
+  });
+
+  group('Modules', () {
+    test('all module IDs are unique', () {
+      final ids = allModules.map((m) => m.id).toList();
+      expect(ids.length, ids.toSet().length, reason: 'Duplicate module IDs');
+    });
+
+    test('every relatedPoiIds entry resolves to a POI', () {
+      final broken = <String, List<String>>{};
+      for (final module in allModules) {
+        final missing = module.relatedPoiIds
+            .where((id) => !poiById.containsKey(id))
+            .toList();
+        if (missing.isNotEmpty) broken[module.id] = missing;
+      }
+      expect(broken, isEmpty, reason: 'Unknown POI IDs: $broken');
+    });
+
+    test('every module has sections and at least one absolute source URL', () {
+      final bad = <String>[];
+      for (final module in allModules) {
+        final sourcesOk =
+            module.sources.isNotEmpty &&
+            module.sources.every((s) => Uri.tryParse(s)?.isAbsolute ?? false);
+        if (module.sections.isEmpty || !sourcesOk) bad.add(module.id);
+      }
+      expect(bad, isEmpty, reason: 'Modules missing sections or sources: $bad');
     });
   });
 }

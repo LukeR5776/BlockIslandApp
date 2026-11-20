@@ -1,5 +1,14 @@
 enum ActionKind { habit, event, volunteer, support }
 
+extension ActionKindLabel on ActionKind {
+  String get label => switch (this) {
+    ActionKind.habit => 'Habits',
+    ActionKind.event => 'Events',
+    ActionKind.volunteer => 'Volunteer',
+    ActionKind.support => 'Support',
+  };
+}
+
 /// A Conservation tab item: a habit, event, or org to get involved with.
 class ConservationAction {
   final String id;
