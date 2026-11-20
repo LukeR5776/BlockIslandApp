@@ -103,4 +103,25 @@ void main() {
     expect(state.questsCompleted, 3);
     expect(state.poisVisited(testPois), 2);
   });
+
+  test('onboarding flag persists and can be reset for a replay', () async {
+    final state1 = AppState();
+    await state1.load();
+    expect(state1.hasSeenOnboarding, false);
+
+    state1.markOnboardingSeen();
+    expect(state1.hasSeenOnboarding, true);
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    final state2 = AppState();
+    await state2.load();
+    expect(state2.hasSeenOnboarding, true);
+
+    state2.resetOnboarding();
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    final state3 = AppState();
+    await state3.load();
+    expect(state3.hasSeenOnboarding, false);
+  });
 }

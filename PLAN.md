@@ -21,11 +21,14 @@ animation helpers, extra theme files, and so on.
 lib/
   main.dart                      // entry, Provider, MaterialApp, theme
   app_shell.dart                 // bottom nav + IndexedStack
+  features/
+    onboarding/                  // first-launch "Landfall" sequence, see docs/onboarding_design.md
   theme/
     colors.dart
     typography.dart
     spacing.dart
     app_theme.dart               // assembles ThemeData from the above
+    onboarding_tokens.dart       // onboarding timings, colors, curves
   models/
     poi.dart
     module.dart

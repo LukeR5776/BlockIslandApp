@@ -34,6 +34,16 @@ class AppColors {
   static const catLandmark = Color(0xFF6B7F3F);
   static const catOrganization = Color(0xFF8C4B3A);
 
+  // Module categories — card fills with white text, each >= 4.5:1.
+  static const catEcology = Color(0xFF2F6B4F);
+  static const catHistory = Color(0xFF7A4B2E);
+  static const catGeology = Color(0xFFA14A26);
+  static const catCommunity = Color(0xFF1F5F86);
+
+  // Tab header gradients, drawn from the onboarding's night sea.
+  static const headerNight = Color(0xFF061019);
+  static const headerSea = Color(0xFF0C2537);
+
   // Elevation — the only shadow in the app, on the bottom sheet
   static const sheetShadow = Color(0x1416212B); // ink at 8% opacity
 }

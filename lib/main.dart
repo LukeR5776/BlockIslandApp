@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'state/app_state.dart';
 import 'theme/app_theme.dart';
-import 'screens/exploration/map_screen.dart';
+import 'app_shell.dart';
+import 'features/onboarding/onboarding_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,7 @@ class BlockIslandApp extends StatelessWidget {
         title: 'Block Island',
         theme: buildAppTheme(),
         themeMode: ThemeMode.light, // locked light, no dark mode
-        home: const MapScreen(), // SPIKE: temporary home, revert to StyleguideScreen
+        home: const OnboardingGate(child: AppShell()),
       ),
     );
   }

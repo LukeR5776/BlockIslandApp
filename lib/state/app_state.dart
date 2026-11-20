@@ -2,13 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/poi.dart';
 
-/// The app's entire mutable state. Persisted as three StringLists in
-/// shared_preferences; writes are fire-and-forget after notifyListeners so
-/// the UI never waits on disk.
+/// The app's entire mutable state. Persisted as three StringLists and one
+/// bool in shared_preferences; writes are fire-and-forget after
+/// notifyListeners so the UI never waits on disk.
 class AppState extends ChangeNotifier {
   Set<String> _completedQuestIds = {};
   Set<String> _readModuleIds = {};
   Set<String> _committedActionIds = {};
+  bool _hasSeenOnboarding = false;
+
+  static const _onboardingKey = 'hasSeenOnboarding';
 
   Set<String> get completedQuestIds => _completedQuestIds;
   Set<String> get readModuleIds => _readModuleIds;
@@ -44,6 +47,24 @@ class AppState extends ChangeNotifier {
     _persist();
   }
 
+  /// Loaded before the first frame, so a returning user never sees a flash
+  /// of the onboarding.
+  bool get hasSeenOnboarding => _hasSeenOnboarding;
+
+  void markOnboardingSeen() => _setOnboardingSeen(true);
+
+  /// For a future "Replay introduction" row on the About screen.
+  void resetOnboarding() => _setOnboardingSeen(false);
+
+  void _setOnboardingSeen(bool value) {
+    if (_hasSeenOnboarding == value) return;
+    _hasSeenOnboarding = value;
+    notifyListeners();
+    SharedPreferences.getInstance().then(
+      (prefs) => prefs.setBool(_onboardingKey, value),
+    );
+  }
+
   int get questsCompleted => _completedQuestIds.length;
 
   // A POI counts as visited when any one of its quests is complete.
@@ -59,6 +80,7 @@ class AppState extends ChangeNotifier {
     _completedQuestIds = (prefs.getStringList('completedQuestIds') ?? []).toSet();
     _readModuleIds = (prefs.getStringList('readModuleIds') ?? []).toSet();
     _committedActionIds = (prefs.getStringList('committedActionIds') ?? []).toSet();
+    _hasSeenOnboarding = prefs.getBool(_onboardingKey) ?? false;
     notifyListeners();
   }
 
